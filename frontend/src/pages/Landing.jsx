@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export default function Landing() {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ export default function Landing() {
     if(url) {
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:8000/api/scrape', { url });
+            const response = await axios.post(`${API_BASE_URL}/api/scrape`, { url });
             navigate(`/dashboard/${response.data.product_id}`);
         } catch (error) {
             console.error("Scraping error:", error);

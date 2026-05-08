@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Activity, Database, CheckCircle2, Terminal } from 'lucide-react';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export default function Admin() {
   const [dbStatus, setDbStatus] = useState('Checking...');
   const [apiStatus, setApiStatus] = useState('Checking...');
@@ -10,7 +12,7 @@ export default function Admin() {
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/');
+        const res = await axios.get(`${API_BASE_URL}/`);
         if (res.status === 200) setApiStatus('Healthy');
         setDbStatus('Connected');
       } catch (e) {

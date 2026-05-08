@@ -5,6 +5,8 @@ import { PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 import { Download, AlertCircle, ThumbsUp, MessageSquare, Star, Sparkles } from 'lucide-react';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export default function Dashboard() {
   const { id } = useParams();
   const [data, setData] = useState(null);
@@ -16,7 +18,7 @@ export default function Dashboard() {
     // Poll the backend until reviews are populated
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/analytics/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/api/analytics/${id}`);
         // If product is still "Scraping in progress...", keep polling
         if (response.data.product && response.data.product.name !== "Scraping in progress...") {
             setData(response.data);

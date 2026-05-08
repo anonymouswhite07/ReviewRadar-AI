@@ -4,6 +4,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Search, ArrowRight, Scale, Star, ThumbsUp, MessageSquare } from 'lucide-react';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export default function Compare() {
   const [products, setProducts] = useState([]);
   const [product1, setProduct1] = useState(null);
@@ -13,7 +15,7 @@ export default function Compare() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/products');
+        const response = await axios.get(`${API_BASE_URL}/api/products`);
         setProducts(response.data);
         setLoading(false);
       } catch (error) {
