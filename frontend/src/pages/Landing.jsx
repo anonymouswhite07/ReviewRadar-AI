@@ -2,15 +2,26 @@ import { Search, ArrowRight, Star, TrendingUp, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import axios from 'axios';
 
 export default function Landing() {
   const [url, setUrl] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     if(url) {
-        navigate('/dashboard'); 
+        setLoading(true);
+        try {
+            const response = await axios.post('http://localhost:8000/api/scrape', { url });
+            navigate(`/dashboard/${response.data.product_id}`);
+        } catch (error) {
+            console.error("Scraping error:", error);
+            alert("Failed to start scraping. Please check the URL.");
+        } finally {
+            setLoading(false);
+        }
     }
   };
 
@@ -20,16 +31,16 @@ export default function Landing() {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="mb-8 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300"
+        className="mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full clay-card text-sm text-gray-600 font-medium"
       >
         <Sparkles className="w-4 h-4 text-accent" />
         <span>Vader + DistilBERT Powered Analysis</span>
       </motion.div>
 
-      <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
-        Unlock <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Product Intelligence</span>
+      <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-gray-800">
+        Unlock <span className="text-primary">Product Intelligence</span>
       </h1>
-      <p className="text-xl text-gray-400 max-w-2xl mb-12">
+      <p className="text-xl text-gray-600 max-w-2xl mb-12">
         Paste any Amazon or Flipkart product URL to instantly scrape reviews, analyze sentiment, and extract actionable business insights using AI.
       </p>
 
@@ -41,15 +52,16 @@ export default function Landing() {
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="block w-full pl-12 pr-32 py-4 bg-surface border border-white/10 rounded-2xl text-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-2xl transition-all"
+          className="block w-full pl-12 pr-40 py-5 clay-card text-lg text-gray-800 placeholder-gray-400 focus:outline-none transition-all"
           placeholder="https://www.amazon.com/dp/B0..."
           required
         />
         <button
           type="submit"
-          className="absolute inset-y-2 right-2 px-6 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl flex items-center gap-2 transition-colors"
+          disabled={loading}
+          className="absolute inset-y-2 right-2 px-6 clay-btn-primary flex items-center gap-2 disabled:opacity-50 cursor-pointer"
         >
-          Analyze <ArrowRight className="w-4 h-4" />
+          {loading ? "Initializing..." : <>Analyze <ArrowRight className="w-4 h-4" /></>}
         </button>
       </form>
 
@@ -76,12 +88,12 @@ export default function Landing() {
 
 function FeatureCard({ icon, title, description }) {
   return (
-    <div className="glass-card p-6 text-left hover:scale-105 transition-transform duration-300">
-      <div className="mb-4 bg-white/5 w-14 h-14 rounded-xl flex items-center justify-center">
+    <div className="clay-card p-6 text-left hover:scale-105 transition-transform duration-300">
+      <div className="mb-4 bg-white/50 w-14 h-14 rounded-xl flex items-center justify-center">
         {icon}
       </div>
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-gray-400">{description}</p>
+      <h3 className="text-xl font-bold mb-2 text-gray-800">{title}</h3>
+      <p className="text-gray-600">{description}</p>
     </div>
   );
 }

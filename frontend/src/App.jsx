@@ -12,6 +12,7 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Landing />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard/:id" element={<Dashboard />} />
           <Route path="compare" element={<Compare />} />
           <Route path="admin" element={<Admin />} />
         </Route>
